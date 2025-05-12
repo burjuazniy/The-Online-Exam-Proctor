@@ -179,7 +179,7 @@
           var audio = document.getElementById('audio');
           var source = document.getElementById('audioSource');
           var par = parameter;
-          var filepath = "{{ url_for('static', filename='OuputAudios/') }}" + par ;
+          var filepath = "{{ url_for('static', filename='OutputAudios/') }}" + par;
           console.log(filepath);
   		source.src =  filepath;
   		audio.load();

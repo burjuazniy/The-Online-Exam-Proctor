@@ -24,6 +24,15 @@ import wave
 import datetime
 import subprocess
 
+from config import (
+    BASE_DIR,
+    STATIC_PATH,
+    FFMPEG_PATH,
+    OUTPUT_AUDIOS_PATH,
+    OUTPUT_VIDEOS_PATH,
+    PROFILES_PATH
+)
+
 #Variables
 #All Related
 Globalflag = False
@@ -79,7 +88,7 @@ SHORT_WIDTH = 2
 CHUNK = int(RATE * FRAME_SECS)
 CUSHION_FRAMES = int(CUSHION_SECS / FRAME_SECS)
 TIMEOUT_FRAMES = int(TIMEOUT_SECS / FRAME_SECS)
-f_name_directory = 'C:/Users/kaungmyat/PycharmProjects/BestOnlineExamProctor/static/OuputAudios'
+
 # Capture
 cap = None
 
@@ -99,11 +108,9 @@ def write_json(new_data, filename='violation.json'):
 
 #Function to move the files to the Output Folders
 def move_file_to_output_folder(file_name,folder_name='OutputVideos'):
-    # Get the current working directory (project folder)
-    current_directory = os.getcwd()
     # Define the paths for the source file and destination folder
-    source_path = os.path.join(current_directory, file_name)
-    destination_path = os.path.join(current_directory, 'static', folder_name, file_name)
+    source_path = os.path.join(BASE_DIR, file_name)
+    destination_path = os.path.join(STATIC_PATH, folder_name, file_name)
     try:
         # Use 'shutil.move' to move the file to the destination folder
         shutil.move(source_path, destination_path)
@@ -117,7 +124,7 @@ def move_file_to_output_folder(file_name,folder_name='OutputVideos'):
 def reduceBitRate (input_file,output_file):
    target_bitrate = "1000k"  # Set your desired target bitrate here
    # Specify the full path to the FFmpeg executable
-   ffmpeg_path = "C:/Users/kaungmyat/Downloads/ffmpeg-2023-08-28-git-b5273c619d-essentials_build/ffmpeg-2023-08-28-git-b5273c619d-essentials_build/bin/ffmpeg.exe"  # Replace with the actual path to ffmpeg.exe on your system
+   ffmpeg_path = FFMPEG_PATH  # The actual path to ffmpeg.exe on your system
    # Run FFmpeg command to lower the bitrate
    command = [
       ffmpeg_path,
@@ -382,7 +389,7 @@ def EDD_record_duration(text, img):
 #system Related
 def deleteTrashVideos():
     global video
-    video_folder = 'C:/Users/kaungmyat/PycharmProjects/BestOnlineExamProctor'
+    video_folder = os.getcwd()
     # Iterate through files in the folder
     for filename in os.listdir(video_folder):
         if filename.lower().endswith('.mp4'):
@@ -415,8 +422,8 @@ class FaceRecognition:
         self.encode_faces()
 
     def encode_faces(self):
-        for image in os.listdir('static/Profiles'):
-            face_image = face_recognition.load_image_file(f"static/Profiles/{image}")
+        for image in os.listdir(PROFILES_PATH):
+            face_image = face_recognition.load_image_file(os.path.join(PROFILES_PATH, image))
             face_encoding = face_recognition.face_encodings(face_image)[0]
 
             self.known_face_encodings.append(face_encoding)
@@ -424,7 +431,7 @@ class FaceRecognition:
         print(self.known_face_names)
 
     def run_recognition(self):
-        global Globalflag
+        global Globalflag, cap
         #video_capture = cv2.VideoCapture(0)
         print(f'Face Detection Flag is {Globalflag}')
         text = ""
@@ -832,14 +839,13 @@ class Recorder:
         # remove all but CUSHION_FRAMES
         keep_frames = len(sound) - TIMEOUT_FRAMES + CUSHION_FRAMES
         recording = b''.join(sound[0:keep_frames])
-        filename = str(random.randint(1,50000))+"VoiceViolation"
-        pathname = os.path.join(f_name_directory, '{}.wav'.format(filename))
-        wf = wave.open(pathname, 'wb')
-        wf.setnchannels(CHANNELS)
-        wf.setsampwidth(self.p.get_sample_size(FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(recording)
-        wf.close()
+        filename = str(random.randint(1,50000)) + "VoiceViolation.wav"
+        pathname = os.path.join(OUTPUT_AUDIOS_PATH, filename)
+        with wave.open(pathname, 'wb') as wf:
+            wf.setnchannels(CHANNELS)
+            wf.setsampwidth(self.p.get_sample_size(FORMAT))
+            wf.setframerate(RATE)
+            wf.writeframes(recording)
         voiceViolation = {
             "Name": "Common Noise is detected.",
             "Time": begin_time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -853,7 +859,7 @@ class Recorder:
 
 def cheat_Detection1():
     deleteTrashVideos()
-    global Globalflag
+    global Globalflag, cap
     mp_face_mesh = mp.solutions.face_mesh
     face_mesh = mp_face_mesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confidence=0.5)
     print(f'CD1 Flag is {Globalflag}')
@@ -865,7 +871,7 @@ def cheat_Detection1():
     deleteTrashVideos()
 
 def cheat_Detection2():
-    global Globalflag, shorcuts
+    global Globalflag, shorcuts, cap
     print(f'CD2 Flag is {Globalflag}')
 
     deleteTrashVideos()

@@ -9,11 +9,18 @@ import numpy as np
 from enum import Enum
 import warnings
 import threading
-import utils
 import random
 import time
 import cv2
 import keyboard
+from db import db_init
+from startup import before_startup
+from config import (
+    MYSQL_HOST,
+    MYSQL_USER,
+    MYSQL_PASSWORD,
+    MYSQL_DB
+)
 
 #variables
 studentInfo=None
@@ -28,11 +35,17 @@ app.secret_key = 'xyz'
 os.path.dirname("../templates")
 
 #Flak's Database Configuration
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'examproctordb'
+app.config['MYSQL_HOST'] = MYSQL_HOST
+app.config['MYSQL_USER'] = MYSQL_USER
+app.config['MYSQL_PASSWORD'] = MYSQL_PASSWORD
+app.config['MYSQL_DB'] = MYSQL_DB
 mysql = MySQL(app)
+
+before_startup(app, mysql)
+
+# Module utils.py already uses things, that are must be validated in before_startup,
+# so 'import utils' there.
+import utils
 
 executor = ThreadPoolExecutor(max_workers=4)  # Adjust the number of workers as needed
 

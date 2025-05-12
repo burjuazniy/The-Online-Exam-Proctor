@@ -1,4 +1,25 @@
-# The-Online-Exam-Proctor :globe_with_meridians: :writing_hand: :rotating_light:
+# The-Online-Exam-Proctor Wrapper
+
+1. Added `requirements.txt`
+2. Configuration of critical code sections is moved to `config.py`, its validation is created in `startup.py`
+3. DB `students` table initialization (`db` module)
+4. Minor bugs fixed
+
+# Quickstart
+
+## Windows
+
+1. Install [CMake](https://cmake.org/download/) (`dlib` cannot be installed without it) and add to the PATH during installation
+2. Clone this repository, `cd` to it
+3. `python -m venv venv`
+4. `.\venv\scripts\activate`
+5. `pip install -r requirements.txt` (might take a few minutes)
+6. Set `FFMPEG_PATH` in `config.py` to your local [FFmpeg](https://ffmpeg.org/download.html)
+7. Make sure, that `MYSQL_*` credentials are valid and MySQL is running
+8. `python app.py`
+9. Open http://127.0.0.1:5000 and login with `admin@example.com`, `admin`
+
+# Original README.md | The-Online-Exam-Proctor :globe_with_meridians: :writing_hand: :rotating_light:
 
 The Online Exam Proctor System is a computer vision-based project designed to ensure the integrity and fairness of online exams. As the popularity of remote learning and online education grows, the need for a robust proctoring system becomes crucial to prevent cheating and maintain the credibility of the examination process. This project will leverage computer vision and AI technologies to monitor and analyze students' behavior during the examination to detect any suspicious activities. It also has the ability to detect speeches to stay one step ahead of the students and to strengthen the anti-cheating methods.
 

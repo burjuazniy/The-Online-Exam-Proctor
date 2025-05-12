@@ -1,0 +1,6 @@
+venv
+*.pyc
+static/Profiles
+static/OutputAudios
+static/OutputVideos
+*.mp4
