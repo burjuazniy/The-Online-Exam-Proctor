@@ -9,7 +9,7 @@
 
 ## Windows
 
-1. Install [CMake](https://cmake.org/download/) (`dlib` cannot be installed without it) and add to the PATH during installation
+1. Install [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/), [CMake](https://cmake.org/download/) (`dlib` cannot be installed without it) and add to the PATH during installation
 2. Clone this repository, `cd` to it
 3. `python -m venv venv`
 4. `.\venv\scripts\activate`
